@@ -1,0 +1,56 @@
+// Leet code problem 200 , Number of Islands
+
+
+public class Solution {
+    char[,] visited;
+    public int NumIslands(char[][] grid) {
+        visited = new char[grid.Length , grid[0].Length];
+        int islandNumber = 0;
+        
+        for (int y = 0; y < grid.Length; y++)
+        {
+            for (int x = 0; x < grid[0].Length; x++ )
+            {
+                //Console.WriteLine("Visited Value" + visited[y,x]);
+                if (grid[y][x] == '1' && visited[y,x] != '1')
+                {
+                    Console.WriteLine("y: " + y + " x: " + x);
+                    islandNumber ++;
+                    visitNeighbours(y,x, grid);
+                }
+            }
+        }
+        return islandNumber;
+    }
+    
+    private void visitNeighbours(int y, int x, char[][] grid)
+    {
+        //Console.WriteLine("about to visit y: " + y + " x: " + x);
+        if (grid[y][x] == '1' && (visited[y,x] != '1'))
+        {
+            Console.WriteLine("Visiting island tile y: " + y + " x: " + x);
+            visited[y,x] = '1';
+            //check right
+            if ((x <= grid[0].Length -2))
+            {
+                visitNeighbours(y, x+1, grid);
+            }
+            //check left
+            if (x >= 1)
+            {
+                visitNeighbours(y, x-1, grid);
+            }
+            //check up
+            if (y >= 1)
+            {
+                visitNeighbours(y-1, x, grid);
+            }
+            //check down
+            if (y <= grid.Length - 2)
+            {
+                visitNeighbours(y+1, x, grid);
+            }
+        
+        }        
+    }
+}
