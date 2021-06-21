@@ -1,0 +1,125 @@
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using System.Collections;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
+using System.Text;
+using System;
+
+class Result
+{
+
+    /*
+     * Complete the 'activityNotifications' function below.
+     *
+     * The function is expected to return an INTEGER.
+     * The function accepts following parameters:
+     *  1. INTEGER_ARRAY expenditure
+     *  2. INTEGER d
+	 * Credit to https://github.com/tweant/Fraudulent-Activity-Notifications/blob/master/Program.cs for inspiration
+     */
+
+    public static int activityNotifications(List<int> expenditure, int d)
+    {
+        // calculating minimal average
+        int noties = 0;
+        Queue<int> increments = new Queue<int>();
+        
+        int[] count = new int[201];
+        
+        var isEven = d % 2 == 0;
+        
+        //Index of median value
+        var medInd = isEven ? d / 2 : (d + 1) / 2;
+
+        for (int i = 0; i < d; i++)
+        {
+            count[expenditure[i]]++;
+            increments.Enqueue(expenditure[i]);
+        }
+        
+        if (expenditure[d] >= (getMedianVal(count, medInd, isEven)*2)) noties++;
+
+        for (int i = d + 1; i < expenditure.Count; i++)
+        {
+            count[increments.Dequeue()]--;
+            increments.Enqueue(expenditure[i-1]);
+            count[expenditure[i-1]]++;
+            if (expenditure[i] >= (getMedianVal(count, medInd, isEven)*2)) noties++;
+
+        }
+        return noties;
+    }
+    
+
+    static double getMedianVal(int[] counts, int medInd, bool isEven)
+    {
+
+        int i = 0;
+        int sum = 0;
+        double val = 0;
+        for (; i < counts.Length; i++)
+        {
+            if (counts[i] > 0)
+            {
+                sum += counts[i];
+                
+                if (sum >= medInd)
+                {
+                    if (!isEven)
+                    {
+                        return i; 
+                    }
+                    else
+                    {
+                        
+                        if (sum == medInd)
+                        {
+                            val += i;
+                        }
+                        else if (val == 0)
+                        {
+                            return i; 
+                        }
+                        else
+                        {
+                            return (val + (double)i) / 2;
+                        }
+                    }
+                }
+            }
+
+        }
+        Console.WriteLine("error");
+        return -1;
+    }
+}
+
+class Solution
+{
+    public static void Main(string[] args)
+    {
+        TextWriter textWriter = new StreamWriter(@System.Environment.GetEnvironmentVariable("OUTPUT_PATH"), true);
+
+        string[] firstMultipleInput = Console.ReadLine().TrimEnd().Split(' ');
+
+        int n = Convert.ToInt32(firstMultipleInput[0]);
+
+        int d = Convert.ToInt32(firstMultipleInput[1]);
+
+        List<int> expenditure = Console.ReadLine().TrimEnd().Split(' ').ToList().Select(expenditureTemp => Convert.ToInt32(expenditureTemp)).ToList();
+
+        int result = Result.activityNotifications(expenditure, d);
+
+        textWriter.WriteLine(result);
+
+        textWriter.Flush();
+        textWriter.Close();
+    }
+}
