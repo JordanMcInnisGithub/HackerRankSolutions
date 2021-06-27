@@ -10,6 +10,7 @@ struct Player {
     string name;
 };
 
+
 class Checker{
 public:
   	// complete this method

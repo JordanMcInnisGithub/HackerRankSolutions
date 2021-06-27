@@ -28,9 +28,9 @@ class Result
         
         return mergeSort(arr.ToArray(), temp, 0, arr.Count-1);
         
-        //return getSimpleInv(arr);
     }
     
+	// Attempt 1 at problem
     static int getSimpleInv(List<int> arr)
     {
         int invCount = 0;

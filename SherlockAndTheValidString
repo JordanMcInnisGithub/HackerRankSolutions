@@ -1,0 +1,88 @@
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using System.Collections;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
+using System.Text;
+using System;
+
+class Result
+{
+
+    /*
+     * Problem link: https://www.hackerrank.com/challenges/sherlock-and-valid-string
+     * Complete the 'isValid' function below.
+     *
+     * The function is expected to return a STRING.
+     * The function accepts STRING s as parameter.
+     */
+
+    public static string isValid(string s)
+    {
+        Dictionary<char, int> dict = new Dictionary<char, int>();
+        
+        foreach (char c in s)
+        {
+            if (!dict.ContainsKey(c))
+            {
+                dict.Add(c,1);
+            }
+            else
+            {  
+                dict[c]++;
+            }
+        }
+        
+        int frequency  = dict.Values.ToList().GroupBy(o => o).OrderByDescending(o => o.Count()).First().Key;
+        Console.WriteLine(frequency);
+
+        bool lifeUsed = false;
+        foreach (KeyValuePair<char, int> pair in dict)
+        {
+            Console.WriteLine(pair.Key + "|" + pair.Value);
+            if (pair.Value != frequency && !lifeUsed)
+            {
+                if (pair.Value + 1 == frequency || pair.Value - 1 == frequency ||                           pair.Value == 1)
+                {
+                    lifeUsed = true;
+                }
+                else
+                {
+                    //Console.WriteLine(pair.Key + "|1|" + pair.Value);
+                    return "NO";
+                }
+            }
+            else if (pair.Value != frequency)
+            {
+                //Console.WriteLine(pair.Key + "|2|" + pair.Value);
+                
+                return "NO";
+            }
+        }
+        return "YES";
+    }
+
+}
+
+class Solution
+{
+    public static void Main(string[] args)
+    {
+        TextWriter textWriter = new StreamWriter(@System.Environment.GetEnvironmentVariable("OUTPUT_PATH"), true);
+
+        string s = Console.ReadLine();
+
+        string result = Result.isValid(s);
+
+        textWriter.WriteLine(result);
+
+        textWriter.Flush();
+        textWriter.Close();
+    }
+}
